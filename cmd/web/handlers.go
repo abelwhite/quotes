@@ -2,23 +2,20 @@
 package main
 
 import (
+	"log"
 	"net/http"
+
+	"github.com/abelwhite/quotes/helpers"
 )
 
 // creating handler function called greeting
 // handler is called when we hit an end point
 func (app *application) quoteCreateShow(w http.ResponseWriter, r *http.Request) {
-	// helpers.RenderTemplates(w, "./static/html/poll.page.tmpl")
+	helpers.RenderTemplates(w, "./static/html/quote.page.tmpl")
 
 }
 
 func (app *application) quoteCreateSubmit(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		//set header
-		w.Header().Set("Allow", "POST")
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	//get the form data
 	err := r.ParseForm()
@@ -26,8 +23,12 @@ func (app *application) quoteCreateSubmit(w http.ResponseWriter, r *http.Request
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
-	the_question := r.PostForm.Get("new_question") //insert question into the database
-	_, err = app.question.Insert(the_question)
+	quote := r.PostForm.Get("quote") //insert question into the database
+	author := r.PostForm.Get("author_name")
+	log.Printf("%s %s\n", quote, author)
+	id, err := app.quote.Insert(quote, author)
+	log.Printf("%s %s %d\n", quote, author, id)
+
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError),
 			http.StatusInternalServerError)

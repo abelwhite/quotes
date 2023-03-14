@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/abelwhite/quotes/internal/models"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -35,7 +36,11 @@ func main() {
 	}
 
 	//create a new instance of the application type
-	app := &application{}
+	app := &application{
+		quote: models.QuoteModel{
+			DB: db,
+		},
+	}
 
 	defer db.Close() //if we dont close the application loop we have memory leak
 	log.Println("Database connection pool established")

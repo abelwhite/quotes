@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotebox</title>
+    <link rel="stylesheet" href="/static/css/styles.css"/>
+</head>
+<body>  
+    <header>
+        <h1><a href="/">QuoteBox</a></h1>
+    </header>
+    <nav>
+        <div>
+            <a href="/">Home</a>
+            <a href="/quote/create">Create quote</a>
+    </nav>
+    <form action="/quote/create" method="POST">  
+        <div>
+            <label>Author</label>
+            <input type="text" name="author_name">
+        </div>
+        <div>
+        <label>Quote</label>
+        <textarea name="quote"></textarea>
+        </div>
+        <div>
+        <input type="submit" value="Submit Quote">
+        </div>
+    </form>
+    <hr>
+    <footer>
+         <p>
+             <a href="mailto:appletree@ub.edu.bz">appletree@ub.edu.bz</a>
+        </p>
+    </footer>
+</body>
+</html>

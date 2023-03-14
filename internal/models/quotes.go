@@ -8,31 +8,31 @@ import (
 )
 
 // Lets model the question table
-type Quotes struct {
-	QuestionID int64
-	Quote      string
-	Author     string
-	CreatedAt  time.Time
+type Quote struct {
+	QuoteID   int64
+	Quote     string
+	Author    string
+	CreatedAt time.Time
 }
 
 // setup dependency injection
-type QuestionModel struct {
+type QuoteModel struct {
 	DB *sql.DB //connection pool
 }
 
 // sql to insert
-func (m *QuoteModel) Insert(body string) (int64, error) { //we use QuestionModel because it has acces to connection pool
+func (m *QuoteModel) Insert(quote string, author string) (int64, error) { //we use QuestionModel because it has acces to connection pool
 	var id int64
 
 	statement := `
-			INSERT INTO questions(body)
-			VALUES($1)  
-			RETURNING question_id
+			INSERT INTO quotes(quote, author)
+			VALUES($1, $2)  
+			RETURNING quote_id
 			`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := m.DB.QueryRowContext(ctx, statement, body).Scan(&id) //m is the instance, DB. connectionpool, and we want to send query row context
+	err := m.DB.QueryRowContext(ctx, statement, quote, author).Scan(&id) //m is the instance, DB. connectionpool, and we want to send query row context
 	if err != nil {
 		return 0, err
 	}
@@ -42,19 +42,19 @@ func (m *QuoteModel) Insert(body string) (int64, error) { //we use QuestionModel
 
 // write SQL code to access the database
 // TODO
-func (m *QuestionModel) Get() (*Question, error) { //we use QuestionModel because it has acces to connection pool
-	var q Question
+func (m *QuoteModel) Get() (*Quote, error) { //we use QuestionModel because it has acces to connection pool
+	var q Quote
 
 	statement := `
-			SELECT question_id, body 
-			FROM questions
+			SELECT quote_id, quote, author
+			FROM quotes
 			ORDER BY RANDOM()
 			LIMIT 1
 			`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	err := m.DB.QueryRowContext(ctx, statement).Scan(&q.QuestionID, &q.Body) //m is the instNCE, DB. connectionpool, and we want to send query row context
+	err := m.DB.QueryRowContext(ctx, statement).Scan(&q.QuoteID, &q.Quote, &q.Author) //m is the instNCE, DB. connectionpool, and we want to send query row context
 	if err != nil {
 		return nil, err
 	}

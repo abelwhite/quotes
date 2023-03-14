@@ -17,8 +17,8 @@ func (app *application) routes() *httprouter.Router {
 	fileServer := http.FileServer(http.Dir("./static/"))
 	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer)) //remove "resources"
 
-	router.HandlerFunc(http.MethodGet, "/quote/create", app.quoteCreateShow)   //provide string and hander
-	router.HandlerFunc(http.MethodGet, "/quote/create", app.quoteCreateSubmit) //provide string and hander
+	router.HandlerFunc(http.MethodGet, "/quote/create", app.quoteCreateShow)    //provide string and hander
+	router.HandlerFunc(http.MethodPost, "/quote/create", app.quoteCreateSubmit) //provide string and hander
 
 	return router
 } //router is the data structure to allow us to locate the end points
