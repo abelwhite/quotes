@@ -1,4 +1,5 @@
-// Filename: internal/models/questions.go
+// Filename: internal/models/quotes.go
+// where our sql statements are written
 package models
 
 import (
@@ -58,5 +59,39 @@ func (m *QuoteModel) Get() (*Quote, error) { //we use QuestionModel because it h
 		return nil, err
 	}
 	return &q, err
+
+}
+
+func (m *QuoteModel) Read() ([]*Quote, error) {
+	//create SQL statement
+	statement := `
+		SELECT *
+		FROM quotes
+		
+	`
+	rows, err := m.DB.Query(statement)
+	if err != nil {
+		return nil, err
+	}
+	//cleanup before we leave our read method
+	defer rows.Close()
+
+	quotes := []*Quote{} //this will contain the pointer to all quotes
+
+	for rows.Next() {
+		q := &Quote{}
+		err = rows.Scan(&q.QuoteID, &q.Quote, &q.Author, &q.CreatedAt)
+
+		if err != nil {
+			return nil, err
+		}
+		quotes = append(quotes, q) //contain first row
+	}
+	//check to see if there were error generated
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return quotes, nil
 
 }

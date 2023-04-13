@@ -42,35 +42,7 @@ func (app *application) quoteCreateSubmit(w http.ResponseWriter, r *http.Request
 
 func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 
-	//create SQL statement
-	readQuotes := `
-		SELECT *
-		FROM quotes
-		 
-	`
-	rows, err := app.quote.DB.Query(readQuotes)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w,
-			http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
-	defer rows.Close()
-
-	var quotes []Quote
-	for rows.Next() {
-		var q Quote
-		err = rows.Scan(&q.QuoteID, &q.Quote, &q.Author, &q.CreatedAt)
-
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w,
-				http.StatusText(http.StatusInternalServerError),
-				http.StatusInternalServerError)
-		}
-		quotes = append(quotes, q) //contain first row
-	}
-	//check to see if there were erroe generated
-	err = rows.Err()
+	q, err := app.quote.Read()
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
@@ -78,10 +50,6 @@ func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
-	//print the values that are in the slice
-	// for _, quote := range quotes {
-	// 	fmt.Fprintf(w, "%v \n", quote)
-	// }
 
 	//display quotes using tmpl
 	ts, err := template.ParseFiles("./static/html/quoteshow.page.tmpl")
@@ -93,7 +61,7 @@ func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//auming no error
-	err = ts.Execute(w, quotes)
+	err = ts.Execute(w, q)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
