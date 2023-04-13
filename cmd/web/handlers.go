@@ -50,6 +50,10 @@ func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
+	//an instance of templateData
+	data := &templateData{
+		Quote: q,
+	} //this allows us to pass in mutliple data into the template
 
 	//display quotes using tmpl
 	ts, err := template.ParseFiles("./static/html/quoteshow.page.tmpl")
@@ -61,7 +65,7 @@ func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//auming no error
-	err = ts.Execute(w, q)
+	err = ts.Execute(w, data)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w,
