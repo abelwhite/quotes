@@ -22,6 +22,13 @@ type application struct {
 	quote models.QuoteModel
 }
 
+type Quote struct {
+	QuoteID   int64
+	Quote     string
+	Author    string
+	CreatedAt time.Time
+}
+
 func main() {
 	//Create a flag for specifing the port number when starting the server
 	addr := flag.String("port", ":4000", "HTTP network address")

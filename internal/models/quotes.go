@@ -37,7 +37,6 @@ func (m *QuoteModel) Insert(quote string, author string) (int64, error) { //we u
 		return 0, err
 	}
 	return id, nil
-
 }
 
 // write SQL code to access the database
