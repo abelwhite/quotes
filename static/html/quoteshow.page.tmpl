@@ -115,9 +115,33 @@
       <td>{{ .Quote}}</td>
       <td>{{ .Author }}</td>
       <td>
-		<a class="edit-button" href="/">Edit</a>
-	
-    <a class="delete-button" href="/quote/delete?quote_id={{ .QuoteID}}">Delete</a> 
+        
+		<a class="edit-button" href="/quote/delete?quote_id='+{{.QuoteID}}'">Edit</a>
+  
+  <script>    
+  	
+    <!-- <a class="delete-button" href="/quote/delete?quote_id={{ .QuoteID}}">Delete</a>  -->
+    <a class="delete-button" href="#" onclick="deleteQuote({{ .QuoteID }})">Delete</a>
+
+
+function deleteQuote(quoteID) {
+  fetch('/quote/delete?quote_id=' + quoteID, {
+    method: 'DELETE'
+  })
+  .then(response => {
+    if (response.ok) {
+      // Redirect the user to the quote list page
+      window.location.href = '/quote/show';
+    } else {
+      throw new Error('Failed to delete quote');
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}
+</script>
+
  
         
       </td>
