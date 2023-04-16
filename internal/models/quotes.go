@@ -95,3 +95,21 @@ func (m *QuoteModel) Read() ([]*Quote, error) {
 	return quotes, nil
 
 }
+
+func (m *QuoteModel) Delete(quoteID int) error {
+	// create SQL statement to delete a quote with a given ID
+	statement := `
+		DELETE FROM quotes
+		WHERE quote_id = $1
+	`
+
+	// execute the delete statement and check for errors
+	_, err := m.DB.Exec(statement, quoteID)
+	if err != nil {
+
+		return err
+
+	}
+
+	return nil
+}

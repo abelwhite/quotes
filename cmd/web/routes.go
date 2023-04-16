@@ -19,7 +19,9 @@ func (app *application) routes() *httprouter.Router {
 
 	router.HandlerFunc(http.MethodGet, "/quote/create", app.quoteCreateShow)    //provide string and hander
 	router.HandlerFunc(http.MethodPost, "/quote/create", app.quoteCreateSubmit) //provide string and hander
-	router.HandlerFunc(http.MethodGet, "/quote/show", app.quoteShow) 
+	router.HandlerFunc(http.MethodGet, "/quote/show", app.quoteShow)
+	router.HandlerFunc(http.MethodDelete, "/quote/delete", app.quoteDelete)
+	router.HandlerFunc(http.MethodPost, "/quote/update", app.quoteUpdate)
 
 	return router
 } //router is the data structure to allow us to locate the end points

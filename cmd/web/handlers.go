@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/abelwhite/quotes/helpers"
 )
@@ -72,5 +73,74 @@ func (app *application) quoteShow(w http.ResponseWriter, r *http.Request) {
 			http.StatusText(http.StatusInternalServerError),
 			http.StatusInternalServerError)
 	}
+
+}
+
+func (app *application) quoteDelete(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Retrieve the quote ID from the URL query parameters
+	quoteIDStr := r.URL.Query().Get("quote_id")
+
+	// Convert the quote ID string to an integer
+	quoteID, err := strconv.Atoi(quoteIDStr)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w,
+			http.StatusText(http.StatusBadRequest),
+			http.StatusBadRequest)
+		return
+	}
+
+	// Call the Delete method to remove the quote from the database
+	err = app.quote.Delete(quoteID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect the user back to the quote list page
+	http.Redirect(w, r, "/quote/show", http.StatusSeeOther)
+}
+
+func (app *application) quoteUpdate(w http.ResponseWriter, r *http.Request) {
+	// //parse the quote ID from the URL path
+	// params := mux.Vars(r)
+	// quoteID, err := strconv.Atoi(params["id"])
+	// if err != nil {
+	// 	http.Error(w,
+	// 		http.StatusText(http.StatusBadRequest),
+	// 		http.StatusBadRequest)
+	// 	return
+	// }
+
+	// //get the updated quote data from the request body
+	// q := &Quote{}
+	// err = json.NewDecoder(r.Body).Decode(q)
+	// if err != nil {
+	// 	http.Error(w,
+	// 		http.StatusText(http.StatusBadRequest),
+	// 		http.StatusBadRequest)
+	// 	return
+	// }
+
+	// //set the QuoteID field of the quote to the parsed quote ID
+	// q.QuoteID = quoteID
+
+	// //update the quote in the database
+	// err = app.quote.Update(q)
+	// if err != nil {
+	// 	http.Error(w,
+	// 		http.StatusText(http.StatusInternalServerError),
+	// 		http.StatusInternalServerError)
+	// 	return
+	// }
+
+	// //return a success status
+	// w.WriteHeader(http.StatusOK)
 
 }
